@@ -1,7 +1,7 @@
-var currentDayNum;
+var currentDayNum = 1;
 
 var trip = [
-  { day: 1,
+  {
     hotels:[],
     restaurants: [],
     activities: []
@@ -9,7 +9,7 @@ var trip = [
 ];
 function newDay(){
   trip.push(
-    { day: trip.length+1,
+    {
       hotels:[],
       restaurants: [],
       activities: []
@@ -44,17 +44,21 @@ $('#ActivitiesButton').click(function(){
 $('#dayList').on('click', 'button', function(){
   var $buttonPressed = $(this);
   currentDayNum = $buttonPressed.text();
-  console.log(currentDayNum);
   $('#dayTag').text('Day ' + currentDayNum);
+  // now show correct panel
+  $('.trip-panel').removeClass('showMe');
+  $('.trip-panel').addClass('hideMe');
+  var builtPanelNum='#panel' + currentDayNum;
+  $(builtPanelNum).addClass('showMe');
+
+
   // $('$buttonPressed').parent().remove();
 });
 
 function dataFinder(type, id){
-  // console.log(type, id);
   var ourItem;
   type.forEach(function(item){
      if (item._id === id){
-      //  console.log("item is here:",item);
        ourItem = item;
      }
   });
@@ -62,11 +66,33 @@ function dataFinder(type, id){
 }
 function dataInsertor(thing, category){
   var searchStr = '#' + category;
-  console.log("thing",thing)
+  // adds chosen item to object
   trip[currentDayNum-1][category].push(thing);
+  divBuilder();
 
-  var builtItem = '<li id='+thing._id+'>' + thing.name + '<button class="btn btn-sm btn-danger" id ='+thing._id+'"</button></li>';
-  var $newItem = $(builtItem);
-  $(searchStr).append($newItem);
+  // var builtItem = '<li id='+thing._id+'>' + thing.name + '<button class="btn btn-sm btn-danger" id ='+thing._id+'"</button></li>';
+  // var $newItem = $(builtItem);
+  // $(searchStr).append($newItem);
+
+}
+// function()
+
+function divBuilder(){
+  $(".panel-body li").remove();
+  var currentDay = trip[currentDayNum-1];
+    for (var key in currentDay) {
+      var idStr = '#' + key;
+      // console.log("searchStr is",idStr);
+      for (var i = 0; i < trip[currentDayNum-1][key].length; i++) {
+        var thingName = trip[currentDayNum-1][key][i].name;
+        var thingId = trip[currentDayNum-1][key][i]._id;
+        console.log("idStr :",idStr);
+
+        var builtItem = '<li id='+thingId+'>' + thingName + '<button class="btn btn-sm btn-danger" id ='+thingId+'"</button></li>';
+        var $newItem = $(builtItem);
+        $(idStr).append($newItem);
+
+      }
+    }
 
 }
